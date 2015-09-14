@@ -1,20 +1,31 @@
 
-#define V_E_GRAPH_DEBUG_MODE true
+/**
+ *
+ * _test.cpp
+ *
+ * Tests VEGraph
+ * 
+ * author: Ag
+ * 
+ */
 
 #include "_test.h"
 
 namespace VEGraphTest {
     
     void run() {
-        Graph<std::string> g {};
+
+        Graph<std::string> g {}; // create a graph
         
+        // connect some vertices (vertices automatically created if not existing)
         g.connect("blah", "test", 5);
         g.connect("blah", "test", 2);
         g.connect("test", "hello", 2);
         
         std::cout << std::endl;
         
-        for (auto& kv : g.verticies()) {
+        // print connections
+        for (auto& kv : g.vertices()) {
             
             std::cout << "vertex " << kv.first << std::endl;
             
@@ -26,8 +37,6 @@ namespace VEGraphTest {
             std::cout << std::endl;
             
         }
-        
-        std::cout << std::endl;
         
     }
     

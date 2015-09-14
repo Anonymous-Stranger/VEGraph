@@ -1,5 +1,8 @@
 
 /*
+ * Edge.h
+ *
+ * A class to manage each Edge in a Graph.
  * 
  * author: Ag
  * 
@@ -18,7 +21,8 @@ template<typename T> class Vertex;
 
 template<typename T>
 struct Edge {
-    
+
+// debug mode will print messages when Edge objects are created, moved and destroyed.    
 #ifdef V_E_GRAPH_DEBUG_MODE
     static constexpr bool debug_mode {V_E_GRAPH_DEBUG_MODE};
 #else 
@@ -51,18 +55,21 @@ struct Edge {
     }
     
     Vertex<T>*& same(Vertex<T> *const v) {
+    /* Returns a reference to va or vb, whichever points to the given vertex. */
         if (v == va) return va;
         if (v == vb) return vb;
         throw VertexDoesNotEndEdgeError{};
     }
     
     Vertex<T>*& other(Vertex<T> *const v) {
+    /* Returns a reference to va or vb, whichever points to the vertex other than given vertex. */
         if (v == va) return vb;
         if (v == vb) return va;
         throw VertexDoesNotEndEdgeError{};
     }
     
     void disconnect(Vertex<T>* v) {
+    /* Disconnects self from the given vertex. */
         Vertex<T>*& pt = same(v);
         pt->eds.erase(this);
         pt = nullptr;
@@ -76,6 +83,7 @@ struct Edge {
     }
     
     std::string debugStr() const {
+    /* Returns data related to this edge in a formatted-for-viewing string. */
         std::stringstream ss {};
         ss << "edge:" << this << "(" << (va ? va->debugStr() : "null") << ", ";
         ss << (vb ? vb->debugStr() : "null") << ", " << len << ")";

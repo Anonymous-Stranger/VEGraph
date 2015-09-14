@@ -1,5 +1,8 @@
 
 /*
+ * Vertex.h
+ *
+ * A class to manage each vertex in a Graph.
  * 
  * author: Ag
  * 
@@ -20,6 +23,7 @@ class Vertex {
     
 public:
 
+// debug mode will print messages when Vertex objects are created and destroyed.
 #ifdef V_E_GRAPH_DEBUG_MODE
     static constexpr bool debug_mode {V_E_GRAPH_DEBUG_MODE};
 #else 
@@ -32,49 +36,41 @@ public:
         if (debug_mode) std::cout << ">> " << debugStr() << std::endl;
     }
     
-    Vertex(const Vertex<T>& v): uid{v.uid} {
-        if (debug_mode) std::cout << ">> " << debugStr() << ": " << v.debugStr() << std::endl;
-    }
-    
-    Vertex& operator=(const Vertex<T>& v) {
-        std::swap(*this, {v});
-        if (debug_mode) std::cout << ">> " << debugStr() << v.debugStr() << std::endl;
-        return *this;
-    }
-    
-    Vertex(Vertex<T>&& v): uid{v.uid} {
-        if (debug_mode) std::cout << ">> " << debugStr() << ": <- " << v.debugStr() << std::endl;
-    }
-    
-    Vertex& operator=(Vertex<T>&& v) {
-        std::swap(*this, v);
-        if (debug_mode) std::cout << ">> " << debugStr() << " <- " << v.debugStr() << std::endl;
-        return *this;
-    }
+    // Just use pointers. 
+    // It's way more complicated to worry about the consequences of copies and moves within a graph.
+    Vertex(const Vertex<T>& v)=delete;
+    Vertex& operator=(const Vertex<T>& v)=delete;
+    Vertex(Vertex<T>&& v)=delete;
+    Vertex& operator=(Vertex<T>&& v)=delete;
     
     ~Vertex() {
+        clear();
+        if (debug_mode) std::cout << ">> ~" << debugStr() << std::endl;
         
-        for (auto& e : eds) {
+    }
+
+    void clear() {
+        for (auto& e : eds) { // delete all connected edges
             e->same(this) = nullptr;
             delete e;
         }
-        
-        if (debug_mode) std::cout << ">> ~" << debugStr() << std::endl;
-        
+
+        eds.clear();
     }
     
     const T& id() const { return uid; }
     const edge_set& edges() const { return eds; }
 
     std::string debugStr() const {
+    /* Returns data related to this vertex in a formatted-for-viewing string. */
         std::stringstream ss {};
         ss << "vertex:" << this << "(" << uid << ")";
         return ss.str();
     }
 
 private:
-    T uid;
-    edge_set eds {};
+    T uid; // unique id
+    edge_set eds {}; // edges
 };
 
 } /* VEGraph */
